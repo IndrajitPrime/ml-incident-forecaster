@@ -1,1 +1,78 @@
-# ml-incident-forecaster
+ML Incident Volume Forecaster
+
+A desktop application that uses Random Forest machine learning to predict future IT support ticket volumes by assignment group, priority, and category. Built with Python, scikit-learn, and Tkinter.
+
+The Problem It Solves
+
+Support teams managing IT incident queues frequently face unpredictable volume spikes that overwhelm available capacity and breach SLA targets. Traditional approaches to workload planning rely on gut feel or simple averages. This tool learns from historical ticket data to forecast future volumes and flag spike days before they happen — giving managers time to reallocate resources proactively.
+
+How It Works
+
+The application trains separate Random Forest Regressor models for each dimension of the ticket data:
+
+
+Assignment Group models — predict monthly ticket volumes per team
+Priority models — predict volume distribution across priority levels
+Category / Sub-Category models — predict which issue types will dominate
+Spike day detection — identifies specific future dates likely to exceed normal thresholds based on learned daily patterns
+
+
+The models use time-series features extracted from historical ticket dates (day of week, month, rolling averages) combined with categorical features (assignment group, priority, category) encoded via Label Encoding. Trained models are persisted to disk using pickle so predictions can be regenerated without retraining.
+
+Input
+
+An Excel file (.xlsx or .xls) with the following required columns:
+
+ColumnDescriptionAssignment GroupTeam or queue the ticket was routed toPriorityTicket priority levelCreatedDate the ticket was createdCategoryTicket categorySub CategoryTicket sub-category
+
+Output
+
+The application generates four visualization tabs:
+
+
+Assignment Group Volumes — bar chart of predicted monthly volumes per team
+Priority Volumes — pie chart of predicted priority distribution
+Category Volumes — horizontal bar chart of top predicted issue categories
+Spike Days — timeline of predicted high-volume days with assignment group breakdown
+
+
+Files
+
+FileDescriptionSupportPredict.pyBase version of the applicationSupportValue.pyEnhanced version with improved visualizations, scrollable frames, and color-coded charts
+
+Tech Stack
+
+
+Python 3.x
+scikit-learn (Random Forest Regressor, Label Encoder)
+Pandas / NumPy
+Matplotlib
+Tkinter (desktop UI)
+pickle (model persistence)
+
+
+How To Run
+
+
+Install dependencies:
+
+
+pip install scikit-learn pandas numpy matplotlib python-dateutil openpyxl
+
+
+Run the enhanced version:
+
+
+python SupportValue.py
+
+
+Browse to your historical ticket data Excel file, set the number of months to predict, and click Process & Predict.
+
+
+Background
+
+This tool was built independently to address a real operational gap in incident management planning. It was trained and validated on production ticket data and achieved approximately 90% prediction accuracy against historical benchmarks. The tool progressed from internal prototype to client deployment.
+
+License
+
+Apache License 2.0
