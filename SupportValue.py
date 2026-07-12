@@ -189,9 +189,10 @@ class IncidentPredictorApp:
             r2 = r2_score(y_test, y_pred_test)
             if not hasattr(self, 'eval_metrics'):
                 self.eval_metrics = {}
-            self.eval_metrics[f"{prefix}_{col}"] = {'mae': mae, 'r2': r2}
-            print(f"{prefix}_{col} — R²: {r2:.3f}, MAE: {mae:.2f}")
-
+            #self.eval_metrics[f"{prefix}_{col}"] = {'mae': mae, 'r2': r2}
+            #print(f"{prefix}_{col} — R²: {r2:.3f}, MAE: {mae:.2f}")
+            self.eval_metrics[f"complex_{ag}"] = {'mae': mae, 'r2': r2}
+            print(f"complex_{ag} — R²: {r2:.3f}, MAE: {mae:.2f}")
             self.models[f"complex_{ag}"] = model
 
     def train_time_series_models(self, df, prefix):
@@ -226,7 +227,7 @@ class IncidentPredictorApp:
             
             model = RandomForestRegressor(n_estimators=100, random_state=42)
             model.fit(X_train, y_train)
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
             
             
