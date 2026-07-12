@@ -162,7 +162,7 @@ class IncidentPredictorApp:
         complex_model_data = monthly_data.groupby(
             ['YearMonth', 'Assignment Group', 'Category_SubCategory', 'Priority']
         ).size().reset_index(name='Count')
-        
+        complex_model_data = complex_model_data.sort_values('YearMonth')
         for ag in monthly_data['Assignment Group'].unique():
             ag_data = complex_model_data[complex_model_data['Assignment Group'] == ag]
             if len(ag_data) < 10:
@@ -178,8 +178,10 @@ class IncidentPredictorApp:
                 
                 X[col] = self.label_encoders[col].transform(X[col])
             
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-            
+            #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            split_idx = int(len(X) * 0.8)
+            X_train, X_test = X.iloc[:split_idx], X.iloc[split_idx:]
+            y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
             model = RandomForestRegressor(n_estimators=100, random_state=42)
             model.fit(X_train, y_train)
             y_pred_test = model.predict(X_test)
@@ -196,7 +198,7 @@ class IncidentPredictorApp:
         df = df.copy()
         if not isinstance(df.index, pd.DatetimeIndex):
             df.index = pd.to_datetime(df.index)
-            
+        df = df.sort_index()    
         df['days_since_start'] = (df.index - pd.Timestamp(df.index[0])).days
         #df['days_since_start'] = (pd.to_datetime(df.index) - pd.to_datetime(df.index[0])).dt.days
         df['day_of_week'] = df.index.dayofweek
@@ -217,7 +219,10 @@ class IncidentPredictorApp:
             if len(y) < 30:
                 continue
                 
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            split_idx = int(len(X) * 0.8)
+            X_train, X_test = X.iloc[:split_idx], X.iloc[split_idx:]
+            y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
             
             model = RandomForestRegressor(n_estimators=100, random_state=42)
             model.fit(X_train, y_train)
