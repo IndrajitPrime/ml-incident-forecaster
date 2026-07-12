@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sklearn.metrics import mean_absolute_error, r2_score
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -181,7 +182,14 @@ class IncidentPredictorApp:
             
             model = RandomForestRegressor(n_estimators=100, random_state=42)
             model.fit(X_train, y_train)
-            
+            y_pred_test = model.predict(X_test)
+            mae = mean_absolute_error(y_test, y_pred_test)
+            r2 = r2_score(y_test, y_pred_test)
+            if not hasattr(self, 'eval_metrics'):
+                self.eval_metrics = {}
+            self.eval_metrics[f"{prefix}_{col}"] = {'mae': mae, 'r2': r2}
+            print(f"{prefix}_{col} — R²: {r2:.3f}, MAE: {mae:.2f}")
+
             self.models[f"complex_{ag}"] = model
 
     def train_time_series_models(self, df, prefix):
@@ -213,6 +221,19 @@ class IncidentPredictorApp:
             
             model = RandomForestRegressor(n_estimators=100, random_state=42)
             model.fit(X_train, y_train)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+            
+            
+            y_pred_test = model.predict(X_test)
+            mae = mean_absolute_error(y_test, y_pred_test)
+            r2 = r2_score(y_test, y_pred_test)
+            if not hasattr(self, 'eval_metrics'):
+                self.eval_metrics = {}
+            self.eval_metrics[f"{prefix}_{col}"] = {'mae': mae, 'r2': r2}
+            print(f"{prefix}_{col} — R²: {r2:.3f}, MAE: {mae:.2f}")
+           
+            
             
             self.models[f"{prefix}_{col}"] = model
 
